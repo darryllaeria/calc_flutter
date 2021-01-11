@@ -26,7 +26,7 @@ class _CalcHomePageState extends State<CalcHomePage> {
       String buttonText, double buttonHeight, Color buttonColor) {
     return Container(
         height: MediaQuery.of(context).size.height * .1 * buttonHeight,
-        color: Colors.redAccent,
+        color: buttonColor,
         child: FlatButton(
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(0.0),
@@ -72,26 +72,48 @@ class _CalcHomePageState extends State<CalcHomePage> {
                     child: Table(
                       children: [
                         TableRow(children: [
-                          Container(
-                              height: MediaQuery.of(context).size.height * .1,
-                              color: Colors.redAccent,
-                              child: FlatButton(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(0.0),
-                                      side: BorderSide(
-                                          color: Colors.white,
-                                          width: 1,
-                                          style: BorderStyle.solid)),
-                                  padding: EdgeInsets.all(16.0),
-                                  onPressed: null,
-                                  child: Text("C",
-                                      style: TextStyle(
-                                          fontSize: 30.0,
-                                          fontWeight: FontWeight.normal,
-                                          color: Colors.white))))
-                        ])
+                          buildButton("C", 1, Colors.redAccent),
+                          buildButton("⌫", 1, Colors.blue),
+                          buildButton("÷", 1, Colors.blue),
+                        ]),
+                        TableRow(children: [
+                          buildButton("7", 1, Colors.black54),
+                          buildButton("8", 1, Colors.black54),
+                          buildButton("9", 1, Colors.black54)
+                        ]),
+                        TableRow(children: [
+                          buildButton("4", 1, Colors.black54),
+                          buildButton("5", 1, Colors.black54),
+                          buildButton("6", 1, Colors.black54)
+                        ]),
+                        TableRow(children: [
+                          buildButton("1", 1, Colors.black54),
+                          buildButton("2", 1, Colors.black54),
+                          buildButton("3", 1, Colors.black54)
+                        ]),
+                        TableRow(children: [
+                          buildButton(".", 1, Colors.black54),
+                          buildButton("0", 1, Colors.black54),
+                          buildButton("00", 1, Colors.black54)
+                        ]),
                       ],
                     )),
+                Container(
+                    width: MediaQuery.of(context).size.width * .25,
+                    child: Table(children: [
+                      TableRow(children: [
+                        buildButton("×", 1, Colors.blue),
+                      ]),
+                      TableRow(children: [
+                        buildButton("-", 1, Colors.blue)
+                      ]),
+                      TableRow(children: [
+                        buildButton("+", 1, Colors.blue)
+                      ]),
+                      TableRow(children: [
+                        buildButton("=", 2, Colors.redAccent)
+                      ])
+                    ])),
               ],
             ),
           ],
