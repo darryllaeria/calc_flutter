@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:math_expressions/math_expressions.dart';
 
 void main() => runApp(CalcApp());
 
@@ -22,6 +23,41 @@ class CalcHomePage extends StatefulWidget {
 }
 
 class _CalcHomePageState extends State<CalcHomePage> {
+  String equation = "0";
+  String result = "0";
+  String expression = "";
+  final double equationFontSize = 38.0;
+  final double resultFontSize = 48.0;
+
+  buttonPressed(String buttonText) {
+    setState(() {
+      if (buttonText == "C") {
+        equation = "0";
+        result = "0";
+      } else if (buttonText == "⌫") {
+        if (equation != "0") {
+          equation = equation.substring(0, equation.length - 1);
+        }
+        if (equation.isEmpty) {
+          equation = "0";
+        }
+      } else if (buttonText == "=") {
+        expression = equation.replaceAll("×", "*").replaceAll("÷", "/");
+        try {
+          result = "${Parser().parse(expression).evaluate(EvaluationType.REAL, ContextModel())}";
+        } on Exception catch (e) {
+          print("Error: ${e.toString()}");
+        }
+      } else {
+        if (equation == "0") {
+          equation = buttonText;
+        } else {
+          equation = equation + buttonText;
+        }
+      }
+    });
+  }
+
   Widget buildButton(
       String buttonText, double buttonHeight, Color buttonColor) {
     return Container(
@@ -33,7 +69,7 @@ class _CalcHomePageState extends State<CalcHomePage> {
                 side: BorderSide(
                     color: Colors.white, width: 1, style: BorderStyle.solid)),
             padding: EdgeInsets.all(16.0),
-            onPressed: null,
+            onPressed: () => buttonPressed(buttonText),
             child: Text(buttonText,
                 style: TextStyle(
                     fontSize: 30.0,
@@ -51,16 +87,16 @@ class _CalcHomePageState extends State<CalcHomePage> {
               alignment: Alignment.centerRight,
               padding: EdgeInsets.fromLTRB(10, 20, 10, 0),
               child: Text(
-                "0",
-                style: TextStyle(fontSize: 38.0),
+                equation,
+                style: TextStyle(fontSize: equationFontSize),
               ),
             ),
             Container(
               alignment: Alignment.centerRight,
               padding: EdgeInsets.fromLTRB(10, 30, 10, 0),
               child: Text(
-                "0",
-                style: TextStyle(fontSize: 48.0),
+                result,
+                style: TextStyle(fontSize: resultFontSize),
               ),
             ),
             Expanded(child: Divider()),
@@ -104,15 +140,10 @@ class _CalcHomePageState extends State<CalcHomePage> {
                       TableRow(children: [
                         buildButton("×", 1, Colors.blue),
                       ]),
-                      TableRow(children: [
-                        buildButton("-", 1, Colors.blue)
-                      ]),
-                      TableRow(children: [
-                        buildButton("+", 1, Colors.blue)
-                      ]),
-                      TableRow(children: [
-                        buildButton("=", 2, Colors.redAccent)
-                      ])
+                      TableRow(children: [buildButton("-", 1, Colors.blue)]),
+                      TableRow(children: [buildButton("+", 1, Colors.blue)]),
+                      TableRow(
+                          children: [buildButton("=", 2, Colors.redAccent)])
                     ])),
               ],
             ),
