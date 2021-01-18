@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:math_expressions/math_expressions.dart';
 import 'package:calc_flutter/util/Constant.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 void main() => runApp(CalcApp());
 
@@ -27,8 +28,6 @@ class _CalcHomePageState extends State<CalcHomePage> {
   String equation = "0";
   String result = "0";
   String expression = "";
-  final double equationFontSize = 38.0;
-  final double resultFontSize = 48.0;
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +40,7 @@ class _CalcHomePageState extends State<CalcHomePage> {
               padding: EdgeInsets.fromLTRB(10, 20, 10, 0),
               child: Text(
                 equation,
-                style: TextStyle(fontSize: equationFontSize),
+                style: TextStyle(fontSize: Constant.EQN_FONT_SIZE, color: Colors.blue),
               ),
             ),
             Container(
@@ -49,7 +48,7 @@ class _CalcHomePageState extends State<CalcHomePage> {
               padding: EdgeInsets.fromLTRB(10, 30, 10, 0),
               child: Text(
                 result,
-                style: TextStyle(fontSize: resultFontSize),
+                style: TextStyle(fontSize: Constant.RESULT_FONT_SIZE),
               ),
             ),
             Expanded(child: Divider()),
@@ -66,24 +65,34 @@ class _CalcHomePageState extends State<CalcHomePage> {
                           buildButton(Constant.BTN_DIVIDE, 1, Colors.blue),
                         ]),
                         TableRow(children: [
-                          buildButton(Constant.BTN_7, 1, Colors.black54),
-                          buildButton(Constant.BTN_8, 1, Colors.black54),
-                          buildButton(Constant.BTN_9, 1, Colors.black54)
+                          buildButton(
+                              Constant.BTN_7.toString(), 1, Colors.black54),
+                          buildButton(
+                              Constant.BTN_8.toString(), 1, Colors.black54),
+                          buildButton(
+                              Constant.BTN_9.toString(), 1, Colors.black54)
                         ]),
                         TableRow(children: [
-                          buildButton(Constant.BTN_4, 1, Colors.black54),
-                          buildButton(Constant.BTN_5, 1, Colors.black54),
-                          buildButton(Constant.BTN_6, 1, Colors.black54)
+                          buildButton(
+                              Constant.BTN_4.toString(), 1, Colors.black54),
+                          buildButton(
+                              Constant.BTN_5.toString(), 1, Colors.black54),
+                          buildButton(
+                              Constant.BTN_6.toString(), 1, Colors.black54)
                         ]),
                         TableRow(children: [
-                          buildButton(Constant.BTN_1, 1, Colors.black54),
-                          buildButton(Constant.BTN_2, 1, Colors.black54),
-                          buildButton(Constant.BTN_3, 1, Colors.black54)
+                          buildButton(
+                              Constant.BTN_1.toString(), 1, Colors.black54),
+                          buildButton(
+                              Constant.BTN_2.toString(), 1, Colors.black54),
+                          buildButton(
+                              Constant.BTN_3.toString(), 1, Colors.black54)
                         ]),
                         TableRow(children: [
                           buildButton(Constant.BTN_DECIMAL, 1, Colors.black54),
-                          buildButton(Constant.BTN_0, 1, Colors.black54),
-                          buildButton("${Constant.BTN_0}${Constant.BTN_0}", 1, Colors.black54)
+                          buildButton(
+                              Constant.BTN_0.toString(), 1, Colors.black54),
+                          buildButton(Constant.BTN_00, 1, Colors.black54)
                         ]),
                       ],
                     )),
@@ -93,10 +102,15 @@ class _CalcHomePageState extends State<CalcHomePage> {
                       TableRow(children: [
                         buildButton(Constant.BTN_MULTIPLY, 1, Colors.blue),
                       ]),
-                      TableRow(children: [buildButton(Constant.BTN_MINUS, 1, Colors.blue)]),
-                      TableRow(children: [buildButton(Constant.BTN_PLUS, 1, Colors.blue)]),
-                      TableRow(
-                          children: [buildButton(Constant.BTN_EQUAL, 2, Colors.redAccent)])
+                      TableRow(children: [
+                        buildButton(Constant.BTN_MINUS, 1, Colors.blue)
+                      ]),
+                      TableRow(children: [
+                        buildButton(Constant.BTN_PLUS, 1, Colors.blue)
+                      ]),
+                      TableRow(children: [
+                        buildButton(Constant.BTN_EQUAL, 2, Colors.redAccent)
+                      ])
                     ])),
               ],
             ),
@@ -106,29 +120,85 @@ class _CalcHomePageState extends State<CalcHomePage> {
 
   buttonPressed(String buttonText) {
     setState(() {
-      if (buttonText == Constant.BTN_CLEAR) {
-        equation = "0";
-        result = "0";
-      } else if (buttonText == Constant.BTN_BACKSPACE) {
-        if (equation != "0") {
-          equation = equation.substring(0, equation.length - 1);
-        }
-        if (equation.isEmpty) {
-          equation = "0";
-        }
-      } else if (buttonText == Constant.BTN_EQUAL) {
-        expression = equation.replaceAll(Constant.BTN_MINUS, "*").replaceAll(Constant.BTN_DIVIDE, "/");
-        try {
-          result = "${Parser().parse(expression).evaluate(EvaluationType.REAL, ContextModel())}";
-        } on Exception catch (e) {
-          print("Error: ${e.toString()}");
-        }
-      } else {
-        if (equation == Constant.BTN_0) {
-          equation = buttonText;
-        } else {
-          equation = equation + buttonText;
-        }
+      switch (buttonText) {
+        case Constant.BTN_CLEAR:
+          {
+            equation = "0";
+            result = "0";
+          }
+          break;
+        case Constant.BTN_BACKSPACE:
+          {
+            if (equation != "0") {
+              equation = equation.substring(0, equation.length - 1);
+            }
+            if (equation.isEmpty) {
+              equation = "0";
+            }
+          }
+          break;
+        case Constant.BTN_00:
+          {
+            if (equation == Constant.BTN_0) {
+              equation = Constant.BTN_0;
+            } else if (equation.length <= Constant.MAX_INPUT_LENGTH) {
+              equation = equation + buttonText;
+            }
+          }
+          break;
+        case Constant.BTN_0:
+        case Constant.BTN_1:
+        case Constant.BTN_2:
+        case Constant.BTN_3:
+        case Constant.BTN_4:
+        case Constant.BTN_5:
+        case Constant.BTN_6:
+        case Constant.BTN_7:
+        case Constant.BTN_8:
+        case Constant.BTN_9:
+          {
+            if (equation == Constant.BTN_0) {
+              equation = buttonText;
+            } else if (equation.length <= Constant.MAX_INPUT_LENGTH) {
+              equation = equation + buttonText;
+            }
+          }
+          break;
+        case Constant.BTN_DIVIDE:
+        case Constant.BTN_MULTIPLY:
+        case Constant.BTN_MINUS:
+        case Constant.BTN_PLUS:
+          {
+            if (equation.length <= Constant.MAX_INPUT_LENGTH) {
+              equation = equation + buttonText;
+            }
+          }
+          break;
+        case Constant.BTN_EQUAL:
+          {
+            expression = equation
+                .replaceAll(Constant.BTN_MULTIPLY, "*")
+                .replaceAll(Constant.BTN_DIVIDE, "/");
+            try {
+              String parserResult = "${Parser().parse(expression).evaluate(EvaluationType.REAL, ContextModel())}";
+              result = (parserResult == "NaN") ? "0" : parserResult;
+            } on Exception catch (e) {
+              Fluttertoast.showToast(
+                  msg: e.toString(),
+                  toastLength: Toast.LENGTH_LONG,
+                  gravity: ToastGravity.SNACKBAR,
+                  backgroundColor: Colors.blue,
+                  textColor: Colors.white,
+                  fontSize: 16.0
+              );
+            }
+          }
+          break;
+        default:
+          {
+            print("Button click error: $buttonText");
+          }
+          break;
       }
     });
   }
@@ -147,7 +217,7 @@ class _CalcHomePageState extends State<CalcHomePage> {
             onPressed: () => buttonPressed(buttonText),
             child: Text(buttonText,
                 style: TextStyle(
-                    fontSize: 30.0,
+                    fontSize: Constant.BUTTON_FONT_SIZE,
                     fontWeight: FontWeight.normal,
                     color: Colors.white))));
   }

@@ -9,6 +9,7 @@ class Constant {
   static const String BTN_MINUS = "-";
   static const String BTN_PLUS = "+";
   static const String BTN_EQUAL = "=";
+  static const String BTN_00 = "00";
   static const String BTN_0 = "0";
   static const String BTN_1 = "1";
   static const String BTN_2 = "2";
@@ -19,4 +20,8 @@ class Constant {
   static const String BTN_7 = "7";
   static const String BTN_8 = "8";
   static const String BTN_9 = "9";
+  static const double EQN_FONT_SIZE = 38.0;
+  static const double RESULT_FONT_SIZE = 48.0;
+  static const double BUTTON_FONT_SIZE = 30.0;
+  static const int MAX_INPUT_LENGTH = 16;
 }
